@@ -45,8 +45,15 @@ DMA_HandleTypeDef hdma_usart2_rx;
 DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
-uint8_t RxBuffer[10]; //start_bit+massage_bit+(stop_bit x2) //add another 1 bit for make sure that have enough space for bits
-uint8_t TxBuffer[20];
+uint8_t RxBuffer[20]; //start_bit+massage_bit+(stop_bit x2) //add another 1 bit for make sure that have enough space for bits
+uint8_t TxBuffer[40];
+int count_hz = 0;
+int x;
+int on_off;
+int mode = 0;
+//uint32_t control_hz;
+float time_to_trick;
+uint8_t state;
 //uint32_t mode = 0;
 /* USER CODE END PV */
 
@@ -108,6 +115,7 @@ int main(void)
   {
 	  Dummytask();
 	  uartdmaconfig();
+	  //mode();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -231,11 +239,11 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : B1_Pin */
-  GPIO_InitStruct.Pin = B1_Pin;
+  /*Configure GPIO pin : PC13 */
+  GPIO_InitStruct.Pin = GPIO_PIN_13;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LD2_Pin */
   GPIO_InitStruct.Pin = LD2_Pin;
@@ -249,36 +257,136 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void Dummytask()
 {
-	static uint32_t timestamp=0;
-	if(HAL_GetTick()>=timestamp){
-		timestamp = HAL_GetTick()+100;
-		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-	}
+	//if(on_off == 1){
+		static uint32_t timestamp=0;
+		if(HAL_GetTick()>=timestamp && on_off == 1){
+			timestamp = HAL_GetTick()+ time_to_trick; //+100 = 5hz because on&off used 200ms ->1000/200 s = 5 cycle = 5hz
+			HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+		}
+
 }
 
 void uartdmaconfig(){
 	//start  UART in DMA Mode
-	HAL_UART_Receive_DMA(&huart2, RxBuffer, 1);
+	HAL_UART_Receive_DMA(&huart2, RxBuffer, 2);
+
+	if (mode == 1){
+	state = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+		if(!state){
+			sprintf((char*)TxBuffer,"Received : Press \r\n");
+			HAL_UART_Transmit_IT(&huart2, TxBuffer, strlen((char*)TxBuffer));
+		}
+		else if(state){
+			sprintf((char*)TxBuffer,"Received : Unpress \r\n");
+			HAL_UART_Transmit_IT(&huart2, TxBuffer, strlen((char*)TxBuffer));}}
+
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
-	if(huart == &huart2){
-		//(for string only) Add string symbol \0 to end string
-		RxBuffer[1] = '\0';
-		//RxBuffer[2] = '\0';
+	RxBuffer[2] = '\0';
+//	uint32_t count_hz = 5;
+	uint32_t time_sec_hz = 0;
+	time_sec_hz = 1000/count_hz;
+	time_to_trick = time_sec_hz/2;
+//
+//	int Button1_Last;
+//	int Button1_Current;
+//	Button1_Current = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
 
-		//return received char
-		sprintf((char*)TxBuffer,"Received : %s\r\n",RxBuffer);
-		HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+		if(huart == &huart2 && RxBuffer[0] == 'a' && RxBuffer[1]=='\r'){ //Fan +
+			//int x;
+			count_hz += 1;
+			x = count_hz;
+	//		printf("Speed right now : %d\r\n",x);
+	//		HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			sprintf((char*)TxBuffer,"Received : %d\r\n",x);
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+
+	//		if (RxBuffer[0] == 'a'){
+	//			count_hz += 1;
+	//			x = count_hz;
+	//			printf("Speed right now : %d\r\n",x);
+	//		}
+		}
+
+		if(huart == &huart2 && RxBuffer[0] == 's' && RxBuffer[1]=='\r'){ //Fan -
+				//int x;
+				count_hz -= 1;
+				x = count_hz;
+				if (x<=0){
+					x = 0;
+					count_hz = 0;
+				}
+		//		printf("Speed right now : %d\r\n",x);
+		//		HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+				sprintf((char*)TxBuffer,"Received : %d\r\n",x);
+				HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+		}
+
+		if(huart == &huart2 && RxBuffer[0] == 'd' && RxBuffer[1]=='\r'){ //+0 led  + 0
+				on_off = 1;
+		}
+
+		if(huart == &huart2 && RxBuffer[0] == 'k' && RxBuffer[1]=='\r'){ //+0 led  + 0
+					on_off = 0;
+			}
+
+
+		if(huart == &huart2 && RxBuffer[1]!='\r'){ //forgot enter
+			//uint32_t text1[] = "You forgot Enter!!!";
+			sprintf((char*)TxBuffer,"Forgot Enter!!! : %s\r\n",RxBuffer);
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			//uint32_t text1[]= "You for got Enter";
+			//HAL_UART_Transmit_DMA(&huart2, text1, 18);
+			//HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+		}
+//	else if (RxBuffer[0]=='\r'){
+//				sprintf((char*)TxBuffer,"This Enter : %s\n",RxBuffer);
+//			}
+
+	if (mode == 1 ){
+//		state = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+//					if(!state){
+//						sprintf((char*)TxBuffer,"Received : Press \r\n");
+//						HAL_UART_Transmit_IT(&huart2, TxBuffer, strlen((char*)TxBuffer));
+//					}
+//					else if(state){
+//						sprintf((char*)TxBuffer,"Received : Unpress \r\n");
+//						HAL_UART_Transmit_IT(&huart2, TxBuffer, strlen((char*)TxBuffer));}
+
 	}
-}
+//void mode(){
+//		int Button1_Last;
+//		int Button1_Current;
+//		Button1_Current = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+//		if(Button1_Current == 0){
+//			sprintf((char*)TxBuffer,"Unpress \r\n");
+//			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+//		}
+//		else if (Button1_Current == 1) {
+//			sprintf((char*)TxBuffer,"Press : \r\n");
+//			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+//		}
 
-//void mode()
+
 //{
+//	uint32_t count_hz = 5;
 //	if (mode == 0){
-//		if (RxBuffer[0] == ) //Incoming packet go to slot number 0 or [0]
+//		if (RxBuffer[0] == a){ //Incoming packet go to slot number 0 or [0]
+//			count_hz += 1;
+//		}
+//		else if (RxBuffer[0] == s) {
+//			count_hz -= 1;
+//		}
+//		else if (RxBuffer[0] == d) {
+//			if
+//		}
 //	}
 //}
+//int Button1_Last;
+//	int Button1_Current;
+//	Button1_Current = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+}
 /* USER CODE END 4 */
 
 /**
