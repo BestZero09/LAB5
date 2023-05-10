@@ -142,7 +142,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  sprintf((char*)text1,"Choose your menu\n\r-----------------\r\n{0} LED Control\r\n{1} Button Status\r\n-------------------\r\nAnd Don't Forget it!!!!\r\n\r\n\r\n\r\n");
+  sprintf((char*)text1,"Choose your menu\n\r*******************\r\n(0) LED Control\r\n(1) Button Status\r\n*******************\r\nAnd Don't Forget it!!!!\r\n\r\n\r\n\r\n");
   HAL_UART_Transmit_IT( &huart2, text1, strlen((char*)text1));
   //uartdmaconfig();
   while (1)
@@ -401,7 +401,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 					TxBuffer[0] = '\000';TxBuffer[1] = '\000';TxBuffer[2] = '\000';TxBuffer[3] = '\000';TxBuffer[4] = '\000';TxBuffer[5] = '\000';TxBuffer[6] = '\000';TxBuffer[7] = '\000';TxBuffer[8] = '\000';TxBuffer[9] = '\000';TxBuffer[10] = '\000';TxBuffer[11] = '\000';TxBuffer[12] = '\000';TxBuffer[13] = '\000';TxBuffer[14] = '\000';TxBuffer[15] = '\000';TxBuffer[16] = '\000';TxBuffer[17] = '\000';TxBuffer[18] = '\000';TxBuffer[19] = '\000';TxBuffer[20] = '\000';TxBuffer[21] = '\000';TxBuffer[22] = '\000';TxBuffer[23] = '\000';TxBuffer[24] = '\000';TxBuffer[25] = '\000';TxBuffer[26] = '\000';TxBuffer[27] = '\000';TxBuffer[28] = '\000';TxBuffer[29] = '\000';TxBuffer[30]  = '\000';
 //					sprintf((char*)TxBuffer,"Received : Menu    \r\n");
 //					HAL_UART_Transmit_IT(&huart2, TxBuffer, strlen((char*)TxBuffer));
-					sprintf((char*)text2,"\r\n\r\n\r\nChoose your menu\n\r-----------------\r\n{0} LED Control\r\n{1} Button Status\r\n-------------------\r\nAnd Don't Forget it!!!!\r\n\r\n\r\n\r\n");
+					sprintf((char*)text2,"\r\n\r\n\r\nChoose your menu\n\r*******************\r\n(0) LED Control\r\n(1) Button Status\r\n*******************\r\nAnd Don't Forget it!!!!\r\n\r\n\r\n\r\n");
 					HAL_UART_Transmit_IT( &huart2, text2, strlen((char*)text2));
 					RxBuffer[0] = '\000';
 				}

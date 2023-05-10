@@ -7,23 +7,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   1 .text         00004574  080001a0  080001a0  000101a0  2**4
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .rodata       0000024c  08004714  08004714  00014714  2**2
+  2 .rodata       00000250  08004714  08004714  00014714  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .ARM.extab    00000000  08004960  08004960  00020078  2**0
+  3 .ARM.extab    00000000  08004964  08004964  00020078  2**0
                   CONTENTS
-  4 .ARM          00000008  08004960  08004960  00014960  2**2
+  4 .ARM          00000008  08004964  08004964  00014964  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  5 .preinit_array 00000000  08004968  08004968  00020078  2**0
+  5 .preinit_array 00000000  0800496c  0800496c  00020078  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  6 .init_array   00000004  08004968  08004968  00014968  2**2
+  6 .init_array   00000004  0800496c  0800496c  0001496c  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  7 .fini_array   00000004  0800496c  0800496c  0001496c  2**2
+  7 .fini_array   00000004  08004970  08004970  00014970  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  8 .data         00000078  20000000  08004970  00020000  2**2
+  8 .data         00000078  20000000  08004974  00020000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          00000328  20000078  080049e8  00020078  2**2
+  9 .bss          00000328  20000078  080049ec  00020078  2**2
                   ALLOC
- 10 ._user_heap_stack 00000600  200003a0  080049e8  000203a0  2**0
+ 10 ._user_heap_stack 00000600  200003a0  080049ec  000203a0  2**0
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  00020078  2**0
                   CONTENTS, READONLY
@@ -458,7 +458,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  sprintf((char*)text1,"Choose your menu\n\r-----------------\r\n{0} LED Control\r\n{1} Button Status\r\n-------------------\r\nAnd Don't Forget it!!!!\r\n\r\n\r\n\r\n");
+  sprintf((char*)text1,"Choose your menu\n\r*******************\r\n(0) LED Control\r\n(1) Button Status\r\n*******************\r\nAnd Don't Forget it!!!!\r\n\r\n\r\n\r\n");
  80005ac:	490b      	ldr	r1, [pc, #44]	; (80005dc <main+0x48>)
  80005ae:	480c      	ldr	r0, [pc, #48]	; (80005e0 <main+0x4c>)
  80005b0:	f003 fc36 	bl	8003e20 <siprintf>
@@ -1406,7 +1406,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
  8000c04:	4b3a      	ldr	r3, [pc, #232]	; (8000cf0 <HAL_UART_RxCpltCallback+0x288>)
  8000c06:	2200      	movs	r2, #0
  8000c08:	779a      	strb	r2, [r3, #30]
-					sprintf((char*)text2,"\r\n\r\n\r\nChoose your menu\n\r-----------------\r\n{0} LED Control\r\n{1} Button Status\r\n-------------------\r\nAnd Don't Forget it!!!!\r\n\r\n\r\n\r\n");
+					sprintf((char*)text2,"\r\n\r\n\r\nChoose your menu\n\r*******************\r\n(0) LED Control\r\n(1) Button Status\r\n*******************\r\nAnd Don't Forget it!!!!\r\n\r\n\r\n\r\n");
  8000c0a:	493b      	ldr	r1, [pc, #236]	; (8000cf8 <HAL_UART_RxCpltCallback+0x290>)
  8000c0c:	483b      	ldr	r0, [pc, #236]	; (8000cfc <HAL_UART_RxCpltCallback+0x294>)
  8000c0e:	f003 f907 	bl	8003e20 <siprintf>
@@ -1528,11 +1528,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
  8000cf8:	080047f0 	.word	0x080047f0
  8000cfc:	200002b0 	.word	0x200002b0
  8000d00:	20000094 	.word	0x20000094
- 8000d04:	08004874 	.word	0x08004874
- 8000d08:	08004890 	.word	0x08004890
+ 8000d04:	08004878 	.word	0x08004878
+ 8000d08:	08004894 	.word	0x08004894
  8000d0c:	20000378 	.word	0x20000378
  8000d10:	2000037c 	.word	0x2000037c
- 8000d14:	080048b0 	.word	0x080048b0
+ 8000d14:	080048b4 	.word	0x080048b4
 				}else if(RxBuffer[0] == 's'){
  8000d18:	4b43      	ldr	r3, [pc, #268]	; (8000e28 <HAL_UART_RxCpltCallback+0x3c0>)
  8000d1a:	781b      	ldrb	r3, [r3, #0]
@@ -1689,13 +1689,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
  8000e28:	20000198 	.word	0x20000198
  8000e2c:	20000378 	.word	0x20000378
  8000e30:	2000037c 	.word	0x2000037c
- 8000e34:	080048b0 	.word	0x080048b0
+ 8000e34:	080048b4 	.word	0x080048b4
  8000e38:	200001ac 	.word	0x200001ac
  8000e3c:	20000094 	.word	0x20000094
  8000e40:	20000004 	.word	0x20000004
- 8000e44:	080048d8 	.word	0x080048d8
+ 8000e44:	080048dc 	.word	0x080048dc
  8000e48:	20000381 	.word	0x20000381
- 8000e4c:	080048f4 	.word	0x080048f4
+ 8000e4c:	080048f8 	.word	0x080048f8
 
 08000e50 <Error_Handler>:
 /**
@@ -2434,7 +2434,7 @@ LoopFillZerobss:
   ldr r1, =_edata
  8001178:	20000078 	.word	0x20000078
   ldr r2, =_sidata
- 800117c:	08004970 	.word	0x08004970
+ 800117c:	08004974 	.word	0x08004974
   ldr r2, =_sbss
  8001180:	20000078 	.word	0x20000078
   ldr r4, =_ebss
@@ -4377,7 +4377,7 @@ static uint32_t DMA_CalcBaseAndBitshift(DMA_HandleTypeDef *hdma)
  8001b94:	4770      	bx	lr
  8001b96:	bf00      	nop
  8001b98:	aaaaaaab 	.word	0xaaaaaaab
- 8001b9c:	08004924 	.word	0x08004924
+ 8001b9c:	08004928 	.word	0x08004928
 
 08001ba0 <DMA_CheckFifoParam>:
   * @param  hdma       pointer to a DMA_HandleTypeDef structure that contains
@@ -6409,7 +6409,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, ui
  80026de:	bf00      	nop
  80026e0:	40023c00 	.word	0x40023c00
  80026e4:	40023800 	.word	0x40023800
- 80026e8:	0800490c 	.word	0x0800490c
+ 80026e8:	08004910 	.word	0x08004910
  80026ec:	20000008 	.word	0x20000008
  80026f0:	2000000c 	.word	0x2000000c
 
@@ -6711,7 +6711,7 @@ uint32_t HAL_RCC_GetPCLK1Freq(void)
  8002934:	4618      	mov	r0, r3
  8002936:	bd80      	pop	{r7, pc}
  8002938:	40023800 	.word	0x40023800
- 800293c:	0800491c 	.word	0x0800491c
+ 800293c:	08004920 	.word	0x08004920
 
 08002940 <HAL_RCC_GetPCLK2Freq>:
   * @note   Each time PCLK2 changes, this function must be called to update the
@@ -6737,7 +6737,7 @@ uint32_t HAL_RCC_GetPCLK2Freq(void)
  800295c:	4618      	mov	r0, r3
  800295e:	bd80      	pop	{r7, pc}
  8002960:	40023800 	.word	0x40023800
- 8002964:	0800491c 	.word	0x0800491c
+ 8002964:	08004920 	.word	0x08004920
 
 08002968 <HAL_UART_Init>:
   * @param  huart  Pointer to a UART_HandleTypeDef structure that contains
@@ -9945,10 +9945,10 @@ static void UART_SetConfig(UART_HandleTypeDef *huart)
  8003dfa:	4798      	blx	r3
  8003dfc:	3601      	adds	r6, #1
  8003dfe:	e7f2      	b.n	8003de6 <__libc_init_array+0x1e>
- 8003e00:	08004968 	.word	0x08004968
- 8003e04:	08004968 	.word	0x08004968
- 8003e08:	08004968 	.word	0x08004968
- 8003e0c:	0800496c 	.word	0x0800496c
+ 8003e00:	0800496c 	.word	0x0800496c
+ 8003e04:	0800496c 	.word	0x0800496c
+ 8003e08:	0800496c 	.word	0x0800496c
+ 8003e0c:	08004970 	.word	0x08004970
 
 08003e10 <memset>:
  8003e10:	4402      	add	r2, r0
@@ -10266,11 +10266,11 @@ static void UART_SetConfig(UART_HandleTypeDef *huart)
  80040fc:	f000 f87a 	bl	80041f4 <_printf_i>
  8004100:	e7eb      	b.n	80040da <_svfiprintf_r+0x1c2>
  8004102:	bf00      	nop
- 8004104:	0800492c 	.word	0x0800492c
- 8004108:	08004936 	.word	0x08004936
+ 8004104:	08004930 	.word	0x08004930
+ 8004108:	0800493a 	.word	0x0800493a
  800410c:	00000000 	.word	0x00000000
  8004110:	08003e61 	.word	0x08003e61
- 8004114:	08004932 	.word	0x08004932
+ 8004114:	08004936 	.word	0x08004936
 
 08004118 <_printf_common>:
  8004118:	e92d 47f0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, lr}
@@ -10606,8 +10606,8 @@ static void UART_SetConfig(UART_HandleTypeDef *huart)
  8004430:	f104 0619 	add.w	r6, r4, #25
  8004434:	e7f5      	b.n	8004422 <_printf_i+0x22e>
  8004436:	bf00      	nop
- 8004438:	0800493d 	.word	0x0800493d
- 800443c:	0800494e 	.word	0x0800494e
+ 8004438:	08004941 	.word	0x08004941
+ 800443c:	08004952 	.word	0x08004952
 
 08004440 <memcpy>:
  8004440:	440a      	add	r2, r1
